@@ -1,0 +1,23 @@
+# dependencies & build output
+node_modules/
+.next/
+out/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# env & secrets
+.env*
+!.env.example
+*.pem
+firebase-key.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# logs
+*.log
