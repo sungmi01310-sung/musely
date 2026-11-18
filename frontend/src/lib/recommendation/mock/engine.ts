@@ -246,14 +246,21 @@ export function buildMockResult(input: {
       ? `${skin} 피부 조건과 기피 성분(${avoid})을 모두 지키는 제품을 찾지 못했어요.`
       : `${skin} 피부 조건을 모두 충족하는 제품을 찾지 못했어요.`;
   } else {
-    summary = concerns ? `${skin} 피부와 ${concerns} 고민을 고려해` : `${skin} 피부를 기준으로`;
-    summary += avoid ? ` ${avoid} 성분이 확인된 제품은 제외하고 골랐어요.` : " 무난하게 쓸 수 있는 제품을 골랐어요.";
+    const parts: string[] = [];
+    if (cosmetics.length) {
+      let s1 = concerns ? `${skin} 피부와 ${concerns} 고민을 고려해` : `${skin} 피부를 기준으로`;
+      s1 += avoid ? ` ${avoid} 성분이 확인된 제품은 제외하고 골랐어요.` : " 무난하게 쓸 수 있는 제품을 골랐어요.";
+      parts.push(s1);
+    }
     if (fragrances.length) {
       const scent = profile.preferredScentFamilies.length
         ? `${join(profile.preferredScentFamilies.map(labelOf))} 계열`
         : `${labelOf(profile.occasion ?? "")} 무드`;
-      summary += ` 향수는 ${scent} 취향에 맞춰 찾았어요.`;
+      // 향수만 추천한 경우에도 기피 성분 조건은 그대로 안내
+      const avoidNote = !cosmetics.length && avoid ? ` ${avoid} 성분이 확인된 향수는 제외했어요.` : "";
+      parts.push(`${cosmetics.length ? "향수는" : "향수를"} ${scent} 취향에 맞춰 찾았어요.${avoidNote}`);
     }
+    summary = parts.join(" ");
   }
 
   return {

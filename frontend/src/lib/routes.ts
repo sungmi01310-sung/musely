@@ -9,9 +9,10 @@ export const routes = {
   profileFragrance: "/profile/fragrance",
   /** 저장된 프로필을 불러와 수정 */
   profileEdit: "/profile/skin?mode=edit",
+  /** 향 취향 단계로 바로 수정 */
+  profileFragranceEdit: "/profile/fragrance?mode=edit",
   /** 새 추천 요청 → 진행 화면 (jobId 없이 들어오면 새 Job 생성) */
   recommendationStart: "/recommendations/loading",
-  /** STEP 05에서 구현 예정 */
   history: "/history",
   settings: "/settings",
 } as const;

@@ -15,6 +15,8 @@ import type {
   RecommendationTrack,
 } from "@/types/recommendation";
 import { getMyBeautyProfile } from "@/lib/api/profile";
+import { mockDelay, readMockDataScenario } from "@/lib/dev/mock-data-scenario";
+import { toRecommendationHistory } from "../history";
 import type { RecommendationAdapter } from "../adapter";
 import { RecommendationError } from "../errors";
 import { RECOMMENDATION_STEPS } from "../steps";
@@ -22,7 +24,7 @@ import { buildMockResult, trackFromProfile } from "./engine";
 import { SCENARIO_TIMING, readMockScenario, type MockScenario } from "./scenarios";
 
 const JOBS_KEY = "musely:mock:recommendation-jobs";
-const RESULTS_KEY = "musely:mock:recommendations";
+export const RESULTS_KEY = "musely:mock:recommendations";
 const MAX_STORED = 20;
 
 type MockJob = {
@@ -42,7 +44,7 @@ const wait = (ms: number, signal?: AbortSignal) =>
     });
   });
 
-function readMap<T>(key: string): Record<string, T> {
+export function readMap<T>(key: string): Record<string, T> {
   try {
     const raw = window.localStorage.getItem(key);
     const parsed = raw ? (JSON.parse(raw) as unknown) : null;
@@ -52,7 +54,7 @@ function readMap<T>(key: string): Record<string, T> {
   }
 }
 
-function writeEntry<T>(key: string, id: string, value: T) {
+export function writeEntry<T>(key: string, id: string, value: T) {
   const map = readMap<T>(key);
   map[id] = value;
   // 오래된 항목 정리 (삽입 순서 기준)
@@ -151,6 +153,16 @@ export const mockRecommendationAdapter: RecommendationAdapter = {
     const result = readMap<RecommendationResult>(RESULTS_KEY)[id];
     if (!result) throw new RecommendationError("NOT_FOUND");
     return result;
+  },
+
+  async listHistory(signal) {
+    await mockDelay(signal);
+    const scenario = readMockDataScenario();
+    if (scenario === "error") throw new RecommendationError("SERVER_ERROR", "[mock] 히스토리 조회 실패 시나리오");
+    if (scenario === "empty") return [];
+    return Object.values(readMap<RecommendationResult>(RESULTS_KEY))
+      .map(toRecommendationHistory)
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   },
 
   async submitFeedback() {

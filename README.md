@@ -6,7 +6,7 @@ AI 맞춤 화장품 · 향수 추천 플랫폼. 피부 타입, 피부 고민, �
 
 | 폴더 | 내용 | 상태 |
 |---|---|---|
-| `frontend/` | Next.js 16 · React 19 · TypeScript · Tailwind CSS v4 | STEP 01–04 완료 |
+| `frontend/` | Next.js 16 · React 19 · TypeScript · Tailwind CSS v4 | STEP 01–05 완료 |
 | `backend/` | NestJS · Prisma · MySQL · Redis · Passport/JWT · Swagger | STEP 06 예정 |
 
 AI 추천 서비스(FastAPI · LangGraph · Vector DB)는 별도로 개발됩니다.
@@ -25,7 +25,7 @@ npm run dev   # http://localhost:3000
 - [x] STEP 02 로그인 · 회원가입 (UI만, 인증 API 미연결)
 - [x] STEP 03 피부 · 향 취향 프로필 (Mock 저장)
 - [x] STEP 04 AI 추천 진행 · 결과 화면 (Mock 어댑터)
-- [ ] STEP 05 추천 히스토리 · 설정
+- [x] STEP 05 추천 히스토리 · 마이페이지(설정)
 - [ ] STEP 06 NestJS 백엔드
 - [ ] STEP 07 MySQL · Prisma · Redis
 - [ ] STEP 08 프론트엔드 ↔ 백엔드 연동

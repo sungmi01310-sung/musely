@@ -46,7 +46,7 @@ function SectionTitle({ index, en, ko, count }: { index: string; en: string; ko:
 }
 
 /** 추천 결과 화면 */
-export function RecommendationResultView({ id }: { id: string }) {
+export function RecommendationResultView({ id, from }: { id: string; from?: "history" }) {
   const [state, setState] = useState<LoadState>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
 
@@ -99,11 +99,11 @@ export function RecommendationResultView({ id }: { id: string }) {
     <div className="pb-24">
       <Container className="max-w-[1280px] pt-8 sm:pt-12">
         <Link
-          href={routes.recommendationSelect}
+          href={from === "history" ? routes.history : routes.recommendationSelect}
           className="-ml-1 inline-flex min-h-11 items-center gap-1.5 text-[13px] text-muted transition-colors hover:text-charcoal"
         >
           <ArrowLeft className="size-3.5" strokeWidth={1.5} aria-hidden />
-          추천 선택으로
+          {from === "history" ? "추천 기록으로" : "추천 선택으로"}
         </Link>
 
         {/* ── 헤드라인 + 요약 ── */}

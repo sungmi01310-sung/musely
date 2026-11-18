@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { FragranceProfileForm } from "@/components/profile/FragranceProfileForm";
+import { EditModeLoader } from "@/components/profile/EditModeLoader";
 
 export const metadata: Metadata = {
   title: "향 취향 프로필",
@@ -7,5 +9,12 @@ export const metadata: Metadata = {
 };
 
 export default function FragranceProfilePage() {
-  return <FragranceProfileForm />;
+  return (
+    <>
+      <Suspense fallback={null}>
+        <EditModeLoader />
+      </Suspense>
+      <FragranceProfileForm />
+    </>
+  );
 }

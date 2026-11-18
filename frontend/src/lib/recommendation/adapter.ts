@@ -13,6 +13,7 @@ import type {
   RecommendationDataSource,
   RecommendationFeedbackRequest,
   RecommendationFeedbackResponse,
+  RecommendationHistory,
   RecommendationJobResponse,
   RecommendationResult,
 } from "@/types/recommendation";
@@ -32,6 +33,8 @@ export interface RecommendationAdapter {
   createJob(request: CreateRecommendationRequest, signal?: AbortSignal): Promise<CreateRecommendationResponse>;
   getJob(jobId: string, signal?: AbortSignal): Promise<RecommendationJobResponse>;
   getRecommendation(id: string, signal?: AbortSignal): Promise<RecommendationResult>;
+  /** 추천 히스토리 (최신순) — 저장된 결과만 조회, 새 추천을 실행하지 않음 */
+  listHistory(signal?: AbortSignal): Promise<RecommendationHistory[]>;
   submitFeedback(request: RecommendationFeedbackRequest): Promise<RecommendationFeedbackResponse>;
   cancelJob?(jobId: string): Promise<void>;
 }

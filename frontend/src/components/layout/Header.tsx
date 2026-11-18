@@ -1,12 +1,38 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { cn } from "@/lib/cn";
-import { mainNav } from "@/lib/site";
+import { accountNav, mainNav } from "@/lib/site";
 import { Button } from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
+
+/** 헤더 우측 개인 메뉴 — 현재 페이지 표시(aria-current) */
+function AccountLinks({ pathname }: { pathname: string }) {
+  return accountNav.map((item) => {
+    const active = !!pathname && pathname.startsWith(item.href);
+    return (
+      <Link
+        key={item.href}
+        href={item.href}
+        aria-current={active ? "page" : undefined}
+        className={cn(
+          "hidden px-3 text-[14px] transition-colors hover:text-charcoal lg:inline-flex",
+          active ? "font-medium text-charcoal" : "text-charcoal-soft",
+        )}
+      >
+        {item.label}
+      </Link>
+    );
+  });
+}
+
+/** usePathname은 요청 시점 데이터 → Suspense 안에서만 사용 (cacheComponents) */
+function AccountLinksWithPath() {
+  return <AccountLinks pathname={usePathname()} />;
+}
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -68,6 +94,10 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
+            <Suspense fallback={<AccountLinks pathname="" />}>
+              <AccountLinksWithPath />
+            </Suspense>
+            <span aria-hidden className="mx-1 hidden h-4 w-px bg-line-strong lg:block" />
             <Link
               href="/login"
               className="hidden px-3 text-[14px] text-charcoal-soft transition-colors hover:text-charcoal sm:inline-flex"
@@ -114,7 +144,7 @@ export function Header() {
             animate={{ clipPath: "inset(0 0 0% 0)" }}
             exit={{ clipPath: "inset(0 0 100% 0)" }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 z-40 flex flex-col bg-ivory px-5 pb-10 pt-32 sm:px-8 lg:hidden"
+            className="fixed inset-0 z-40 flex flex-col overflow-y-auto bg-ivory px-5 pb-10 pt-32 sm:px-8 lg:hidden"
           >
             <nav aria-label="모바일 메뉴" className="flex-1">
               <ul className="flex flex-col">
@@ -133,6 +163,25 @@ export function Header() {
                     >
                       <span className="text-[1.65rem] font-light tracking-[-0.03em]">{item.label}</span>
                       <span className="font-serif text-sm italic text-subtle">0{i + 1}</span>
+                    </Link>
+                  </motion.li>
+                ))}
+              </ul>
+              <ul className="mt-6 grid grid-cols-2 gap-3">
+                {accountNav.map((item, i) => (
+                  <motion.li
+                    key={item.href}
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 + i * 0.06, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <Link
+                      href={item.href}
+                      onClick={() => setOpen(false)}
+                      className="flex min-h-16 flex-col justify-center rounded-2xl bg-lavender/70 px-4 py-3"
+                    >
+                      <span className="font-serif text-[13px] italic text-subtle">{item.en}</span>
+                      <span className="text-[15px] font-medium">{item.label}</span>
                     </Link>
                   </motion.li>
                 ))}

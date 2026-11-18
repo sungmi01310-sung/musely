@@ -7,6 +7,7 @@
 import type {
   CreateRecommendationRequest,
   CreateRecommendationResponse,
+  RecommendationHistory,
   RecommendationJobResponse,
   RecommendationResult,
 } from "@/types/recommendation";
@@ -74,6 +75,11 @@ export const httpRecommendationAdapter: RecommendationAdapter = {
       notFound: "NOT_FOUND",
     });
     return { ...res, id: asId(res.id), meta: { source: "api", sample: res.meta?.sample ?? false } };
+  },
+
+  async listHistory(signal) {
+    const list = await request<RecommendationHistory[]>("/api/recommendations/history", { signal });
+    return list.map((h) => ({ ...h, id: asId(h.id), recommendationId: asId(h.recommendationId) }));
   },
 
   async submitFeedback({ recommendationId, sentiment, comment }) {

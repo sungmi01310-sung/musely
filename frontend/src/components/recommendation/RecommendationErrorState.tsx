@@ -55,11 +55,26 @@ type RecommendationErrorStateProps = {
   children?: ReactNode;
   /** 개발용 상세 메시지 (Mock 모드에서만 표시 권장) */
   devDetail?: string;
+  /** 기본 문구 대신 사용할 문구 (히스토리 · 설정 조회 실패 등) */
+  title?: string;
+  description?: string;
+  /** 페이지 제목(h1)이 따로 있을 때 "h2" */
+  headingLevel?: "h1" | "h2";
 };
 
 /** 추천 실패 화면 — 네트워크 · 서버 · 타임아웃 · 잘못된 Job · 없는 결과 */
-export function RecommendationErrorState({ code, primary, secondary, children, devDetail }: RecommendationErrorStateProps) {
-  const copy = ERROR_COPY[code];
+export function RecommendationErrorState({
+  code,
+  primary,
+  secondary,
+  children,
+  devDetail,
+  title,
+  description,
+  headingLevel = "h1",
+}: RecommendationErrorStateProps) {
+  const copy = { title: title ?? ERROR_COPY[code].title, description: description ?? ERROR_COPY[code].description };
+  const Heading = headingLevel;
   const Icon = ICONS[code];
   return (
     <motion.section
@@ -77,9 +92,9 @@ export function RecommendationErrorState({ code, primary, secondary, children, d
         </span>
       </span>
       <p className="eyebrow mt-8 text-subtle">{EYEBROW[code]}</p>
-      <h1 id="rec-error-title" className="mt-4 text-[1.75rem] leading-[1.3] font-light tracking-[-0.04em] text-balance sm:text-[2.2rem]">
+      <Heading id="rec-error-title" className="mt-4 text-[1.75rem] leading-[1.3] font-light tracking-[-0.04em] text-balance sm:text-[2.2rem]">
         {copy.title}
-      </h1>
+      </Heading>
       <p className="mt-3 max-w-sm text-[15px] leading-relaxed text-muted text-balance">{copy.description}</p>
 
       {children && <div className="mt-8 w-full">{children}</div>}

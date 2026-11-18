@@ -174,3 +174,37 @@ export type RecommendationFeedbackResponse = {
   persisted: boolean;
   source: RecommendationDataSource;
 };
+
+/* ── History (STEP 05) ────────────────────────────────────────── */
+
+/**
+ * 히스토리 목록용 추천 유형 — 요청서(STEP 05) 기준 대문자 enum.
+ * 결과 상세의 RecommendationTrack("cosmetic" | ...)은 기존 ai-core 계약을 따르므로
+ * 두 값은 historyTrackOf()로 변환합니다. (NestJS DTO에서 하나로 통일 권장)
+ */
+export type RecommendationHistoryTrack = "COSMETIC" | "FRAGRANCE" | "BOTH";
+
+/** GET /api/recommendations/history → RecommendationHistory[] (최신순) */
+export interface RecommendationHistory {
+  /** 히스토리 항목 ID (Mock에서는 recommendationId와 동일) */
+  id: string;
+  track: RecommendationHistoryTrack;
+  summary: string;
+  itemCount: number;
+  createdAt: string; // ISO 8601
+  /** 상세 화면 이동용 — /recommendations/{recommendationId} */
+  recommendationId: string;
+  /* ── 아래는 선택 필드: 서버가 줄 때만 표시 ── */
+  cosmeticCount?: number;
+  fragranceCount?: number;
+  /** 대표 제품 이미지 (최대 3개) */
+  thumbnailUrls?: string[];
+  /** 당시 프로필 키워드 (예: ["복합성", "트러블"]) */
+  tags?: string[];
+  /** 샘플/Mock 데이터 여부 */
+  sample?: boolean;
+}
+
+export function historyTrackOf(track: RecommendationTrack): RecommendationHistoryTrack {
+  return track === "cosmetic" ? "COSMETIC" : track === "fragrance" ? "FRAGRANCE" : "BOTH";
+}

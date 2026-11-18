@@ -12,6 +12,12 @@ export const mainNav = [
   { label: "이용 방법", href: "/#how" },
 ] as const;
 
+/** 개인 메뉴 — 헤더 우측(데스크톱) · 모바일 메뉴 */
+export const accountNav = [
+  { label: "추천 기록", en: "Archive", href: "/history" },
+  { label: "마이페이지", en: "My space", href: "/settings" },
+] as const;
+
 export const footerNav = [
   {
     title: "Service",

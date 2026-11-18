@@ -65,3 +65,34 @@ export function getPasswordStrength(password: string): 0 | 1 | 2 | 3 {
   if (/[^A-Za-z0-9]/.test(password) && password.length >= 10) score++;
   return Math.max(1, score) as 1 | 2 | 3;
 }
+
+/* 비밀번호 변경 (설정) ───────────────────────────────────────── */
+
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "현재 비밀번호를 입력해 주세요."),
+    newPassword: passwordFields.shape.password,
+    newPasswordConfirm: z.string().min(1, "새 비밀번호를 한 번 더 입력해 주세요."),
+  })
+  .refine((d) => d.newPassword === d.newPasswordConfirm, {
+    path: ["newPasswordConfirm"],
+    message: "새 비밀번호가 일치하지 않아요.",
+  })
+  .refine((d) => !d.currentPassword || d.newPassword !== d.currentPassword, {
+    path: ["newPassword"],
+    message: "현재 비밀번호와 다른 비밀번호를 입력해 주세요.",
+  });
+
+export type ChangePasswordValues = z.infer<typeof changePasswordSchema>;
+
+/* 계정 이름 ──────────────────────────────────────────────────── */
+
+export const NAME_MAX = 20;
+export const accountNameSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, "이름 또는 닉네임을 입력해 주세요.")
+    .max(NAME_MAX, `${NAME_MAX}자 이하로 입력해 주세요.`),
+});
+export type AccountNameValues = z.infer<typeof accountNameSchema>;
